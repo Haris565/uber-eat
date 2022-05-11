@@ -1,11 +1,27 @@
 import { StyleSheet, Text, View, Image, FlatList } from 'react-native';
-import React from 'react';
-import orders from '../../../assets/data/orders.json';
-import restaurants from '../../../assets/data/restaurants.json';
-import DishListItem from '../../components/DishListItem';
+import React, { useState, useEffect } from 'react';
 import BasketDishitem from '../../components/BasketDishitem';
-const order = orders[0];
+import { useOrderContext } from '../../context/OrderContext';
+import { useRoute } from '@react-navigation/native';
+
 const OrderDetail = () => {
+  const { getOrder } = useOrderContext();
+  const route = useRoute();
+  const id = route.params.id;
+  const [order, setOrder] = useState();
+
+  useEffect(() => {
+    getOrder(id).then(setOrder);
+  }, []);
+
+  if (!order) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{}}>Loading...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.page}>
       <Image source={{ uri: order.Restaurant.image }} style={styles.image} resizeMode="cover" />
@@ -19,7 +35,7 @@ const OrderDetail = () => {
         <Text style={styles.name}>{` ${order.status} : 2 days ago`}</Text>
         <Text style={styles.menu__title}>Your Order</Text>
         <FlatList
-          data={restaurants[0].dishes}
+          data={order.dishes}
           renderItem={({ item }) => <BasketDishitem basketDish={item} />}
           keyExtractor={(item) => item.id}
         />

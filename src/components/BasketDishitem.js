@@ -5,10 +5,10 @@ const BasketDishitem = ({ basketDish }) => {
   return (
     <View style={styles.row}>
       <View style={styles.quantityContainer}>
-        <Text style={{}}>1</Text>
+        <Text style={{}}>{basketDish?.quantity}</Text>
       </View>
-      <Text style={{}}>{basketDish.name}</Text>
-      <Text style={{ marginLeft: 'auto' }}>$ {basketDish.price}</Text>
+      <Text style={{}}>{basketDish?.Dish?.name}</Text>
+      <Text style={{ marginLeft: 'auto' }}>$ {basketDish?.Dish?.price}</Text>
     </View>
   );
 };

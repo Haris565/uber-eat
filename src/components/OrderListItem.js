@@ -8,7 +8,7 @@ const OrderListItem = ({ order }) => {
   return (
     <Pressable
       style={{ flexDirection: 'row', margin: 10 }}
-      onPress={() => navigation.navigate('Order')}
+      onPress={() => navigation.navigate('Order', { id: order.id })}
     >
       <Image source={{ uri: order.Restaurant.image }} style={{ width: 75, height: 75 }} />
       <View style={{ marginLeft: 15 }}>

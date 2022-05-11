@@ -1,4 +1,12 @@
-import { StyleSheet, Text, View, Image, FlatList, ActivityIndicator } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  FlatList,
+  ActivityIndicator,
+  Pressable,
+} from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { AntDesign } from '@expo/vector-icons';
 import DishListItem from '../../components/DishListItem';
@@ -6,16 +14,18 @@ import Header from './Header';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { DataStore } from 'aws-amplify';
 import { Restaurant, Dish } from '../../models';
+import { useBasketContext } from '../../context/BasketContext';
 const RestaurantDetailScreen = () => {
   const [restaurant, setRestaurant] = useState(null);
   const [dishes, setDishes] = useState([]);
   const route = useRoute();
   const navigation = useNavigation();
   const id = route.params?.id;
-
+  const { setBasketRestaurant, basket, basketDishes } = useBasketContext();
   const fetchDishes = async () => {
     try {
       if (id) {
+        setBasketRestaurant(null);
         const result = await DataStore.query(Restaurant, id);
         console.log(result);
         setRestaurant(result);
@@ -36,6 +46,10 @@ const RestaurantDetailScreen = () => {
     }
   }, [id]);
 
+  useEffect(() => {
+    setBasketRestaurant(restaurant);
+  }, [restaurant]);
+
   if (!restaurant) {
     return (
       // <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -50,6 +64,11 @@ const RestaurantDetailScreen = () => {
         renderItem={({ item }) => <DishListItem dish={item} />}
         keyExtractor={(item) => item.id}
       />
+      {basket && (
+        <Pressable onPress={() => navigation.navigate('Basket')} style={styles.button}>
+          <Text style={styles.buttonText}>Open basket ({basketDishes?.length})</Text>
+        </Pressable>
+      )}
     </View>
   );
 };
@@ -90,5 +109,17 @@ const styles = StyleSheet.create({
   },
   menu: {
     marginHorizontal: 20,
+  },
+  button: {
+    backgroundColor: 'black',
+    marginTop: 'auto',
+    padding: 20,
+    alignItems: 'center',
+    margin: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 18,
   },
 });

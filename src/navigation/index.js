@@ -10,13 +10,19 @@ import Basket from '../screens/Basket';
 import OrderDetail from './../screens/OrderDetail/index';
 import { View } from 'react-native';
 import Profile from '../screens/Profile';
+import { useAuthContext } from '../context/AuthContext';
 
 const Stack = createNativeStackNavigator();
 export const RootNavigator = () => {
+  const { dbUser } = useAuthContext();
   return (
     <View style={{ flex: 1 }} collapsable={false}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="HomeTab" component={HomeTab} />
+        {dbUser ? (
+          <Stack.Screen name="HomeTab" component={HomeTab} />
+        ) : (
+          <Stack.Screen name="Profile" component={Profile} />
+        )}
       </Stack.Navigator>
     </View>
   );
